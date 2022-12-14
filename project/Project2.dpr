@@ -27,7 +27,7 @@ begin
   begin
     ReadLn(f, s);
     j := 1;
-    while (j <= Length(s)) do
+    while (j <= Length(s)) and (j<=10) do
     begin
       if ansilowercase(s[j]) = 'ì' then
         Result[i, j] := 0
