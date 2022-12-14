@@ -12,9 +12,8 @@ type
 function readMatrixFromFile(const fileName: string): TMas;
 var
   f: TextFile;
-  s: string;
+  s: ansistring;
   i, j: integer;
-
 begin
   for i := 1 to 10 do
     for j := 1 to 10 do
@@ -29,9 +28,9 @@ begin
     j := 1;
     while (j <= Length(s)) do
     begin
-      if ansilowercase(s[j]) = 'ì' then
+      if ord(s[j]) = ord('Ì') then
         Result[i, j] := 0
-      else if ansilowercase(s[j]) = 'ê' then
+      else if ord(s[j]) = ord('Ê') then
         Result[i, j] := -1
       else
       begin
@@ -55,7 +54,7 @@ begin
   for i := 1 to 10 do
   begin
     for j := 1 to 10 do
-      write(matrix[i, j]:2, ' ');
+      write(matrix[i, j], ' ');
     writeln;
   end;
   ReadLn;

@@ -29,9 +29,9 @@ begin
     j := 1;
     while (j <= Length(s)) do
     begin
-      if ansilowercase(s[j]) = 'ì' then
+      if s[j] = 'Ì' then
         Result[i, j] := 0
-      else if ansilowercase(s[j]) = 'ê' then
+      else if s[j] = 'Ê' then
         Result[i, j] := -1
       else
       begin

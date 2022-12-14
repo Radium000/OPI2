@@ -29,9 +29,9 @@ begin
     j := 1;
     while (j <= Length(s)) do
     begin
-      if ansilowercase(s[j]) = 'ì' then
+      if s[j] = 'Ì' then
         Result[i, j] := 0
-      else if ansilowercase(s[j]) = 'ê' then
+      else if s[j] = 'Ê' then
         Result[i, j] := -1
       else
       begin
@@ -49,13 +49,21 @@ end;
 var
   matrix: TMas;
   i, j: integer;
+  f:textfile;
+  s1,s2:string;
 
 begin
+  AssignFile(f, 'field.txt');
+  Reset(f);
+  readln(f,s1);
+  writeln(ord(ansichar(s1[1])));
+  readln(f,s2);
+  writeln(ord(ansichar(s2[1])));
   matrix := readMatrixFromFile('field.txt');
   for i := 1 to 10 do
   begin
     for j := 1 to 10 do
-      write(matrix[i, j]:2, ' ');
+      write(matrix[i, j], ' ');
     writeln;
   end;
   ReadLn;
