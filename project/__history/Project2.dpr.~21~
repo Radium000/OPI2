@@ -1,0 +1,99 @@
+program Project2;
+
+{$APPTYPE CONSOLE}
+{$R *.res}
+
+uses
+  System.SysUtils;
+
+type
+<<<<<<< HEAD
+  TMas = array [1 .. 10, 1 .. 10] of integer;
+
+function readMatrixFromFile(const fileName: string): TMas;
+=======
+  TArray = array [1 .. 10, 1 .. 10] of integer;
+
+function readMatrixFromFile(const fileName: string): TArray;
+>>>>>>> 0c52fc636bad6672cddf842a0376d963cf882c8b
+var
+  f: TextFile;
+  s: string;
+  i, j: integer;
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0c52fc636bad6672cddf842a0376d963cf882c8b
+begin
+  for i := 1 to 10 do
+    for j := 1 to 10 do
+      Result[i, j] := 0;
+
+  AssignFile(f, fileName);
+  Reset(f);
+  i := 1;
+  while not Eof(f) do
+  begin
+    ReadLn(f, s);
+<<<<<<< HEAD
+    j := 1;
+    while (j <= Length(s)) do
+    begin
+      if ansilowercase(s[j]) = 'ì' then
+        Result[i, j] := 0
+      else if ansilowercase(s[j]) = 'ê' then
+        Result[i, j] := -1
+      else
+      begin
+        delete(s, j, 1);
+        dec(j);
+      end;
+      Inc(j);
+    end;
+
+    Inc(i);
+=======
+    s := trim(s);
+    if (pos('Ê', s) <> 0) and (pos('Ì', s) <> 0) then
+    begin
+      j := 1;
+      while (j < Length(s)) do
+      begin
+        if s[j] = 'Ì' then
+          Result[i, j] := 0
+        else if s[j] = 'Ê' then
+          Result[i, j] := -1
+        else
+        begin
+          delete(s, j, 1);
+          dec(j);
+        end;
+        Inc(j);
+      end;
+
+      Inc(i);
+    end;
+>>>>>>> 0c52fc636bad6672cddf842a0376d963cf882c8b
+  end;
+  CloseFile(f);
+end;
+
+<<<<<<< HEAD
+var
+  matrix: TMas;
+  i, j: integer;
+
+begin
+  matrix := readMatrixFromFile('field.txt');
+  for i := 1 to 10 do
+  begin
+    for j := 1 to 10 do
+      write(matrix[i, j]:2, ' ');
+    writeln;
+  end;
+  ReadLn;
+=======
+begin
+>>>>>>> 0c52fc636bad6672cddf842a0376d963cf882c8b
+
+end.
