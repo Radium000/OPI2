@@ -23,7 +23,7 @@ begin
   AssignFile(f, fileName);
   Reset(f);
   i := 1;
-  while not Eof(f) do
+  while (not Eof(f)) and (i<=10) do
   begin
     ReadLn(f, s);
     j := 1;
