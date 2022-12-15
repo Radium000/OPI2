@@ -206,7 +206,7 @@ end;
 
 function isCorrect(var field: TMatrix; var ships: TShip): Boolean;
 var
-  shipsNum: array [1 .. 4] of integer;
+  shipsNum: array [1 .. 5] of integer;
   I, j, count, dx, dy, x1, y1, ShipLength: integer;
   NewCords: string;
   correct: Boolean;
@@ -244,8 +244,7 @@ begin
                     if field[y1 + dy, x1 + dx] = -1 then
                     begin
                       NewCords := char(y1 + dy) + char(x1 + dx);
-                      y1 := y1 + dy;
-                      x1 := x1 + dx;
+
                     end;
                   end
                   else
@@ -258,8 +257,10 @@ begin
               correct := False
             else
             begin
-              ships[count] := ships[count] + char(y1) + char(x1) + ' ';
-              field[y1, x1] := 1;
+              ships[count] := ships[count] + newcords[1] + newcords[2] + ' ';
+              field[ord(newcords[1]), ord(newcords[2])] := 1;
+              y1 := ord(newcords[1]);
+              x1 := ord(newcords[2]);
             end;
           end;
 
