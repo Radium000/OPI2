@@ -1,14 +1,32 @@
-program Project2;
+﻿program Project2;
 
 {$APPTYPE CONSOLE}
 {$R *.res}
 
 uses
-  System.SysUtils;
+  System.SysUtils,
+  Windows;
 
 type
   TMatrix = array [1 .. 10, 1 .. 10] of integer;
   TShip = array [1 .. 10] of string;
+
+procedure ClearConsoleWindow;
+var
+  cursor: COORD;
+  r: cardinal;
+begin
+  r := 300;
+  cursor.X := 0;
+  cursor.Y := 0;
+  FillConsoleOutputCharacter(GetStdHandle(STD_OUTPUT_HANDLE), ' ', 80 * r, cursor, r);
+  SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursor);
+end;
+
+procedure SetColor(AColor: Integer);
+begin
+  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), AColor and $0F);
+end;
 
 Function ConvertInputToCordinate(var Input: String): Boolean;
 Var
@@ -17,7 +35,7 @@ Var
   FoundX: Boolean;
   I, PosY, SignPos, CounterOfDigits: integer;
 Begin
-  SetOfSigns := '����������';
+  SetOfSigns := 'АБВГДЕЖЗИК';
   FoundX := False;
   CounterOfDigits := 0;
   Input := AnsiUpperCase(Input);
@@ -42,7 +60,7 @@ Begin
     End
     Else
     Begin
-      If ('0' <= Input[I]) And (Input[I] <= '9') Then
+      If ('0' < Input[I]) And (Input[I] <= '9') Then
       Begin
         Inc(CounterOfDigits);
         PosY := I;
@@ -74,12 +92,13 @@ Begin
       Input[2] := Char(X)
     else
       Input[2] := Char(10);
+    Input:=Input[1]+Input[2];
   end
 End;
 
 function CheckCordsOnField(matrix: TMatrix; cords: string): Boolean;
 const
-  SetOfSigns = '����������';
+  SetOfSigns = 'АБВГДЕЖЗИК';
 var
   pos1, pos2: integer;
 begin
@@ -130,7 +149,7 @@ end;
 
 procedure ChangeField(var matrix: TMatrix; var cords: string; ship_mas: TShip);
 const
-  SetOfSigns = '����������';
+  SetOfSigns = 'АБВГДЕЖЗИК';
 var
   pos1, pos2: integer;
 begin
@@ -168,9 +187,9 @@ begin
     j := 1;
     while (j <= Length(s)) and (j <= 10) do
     begin
-      if ansilowercase(s[j]) = '�' then
+      if ansilowercase(s[j]) = 'м' then
         Result[I, j] := 0
-      else if ansilowercase(s[j]) = '�' then
+      else if ansilowercase(s[j]) = 'к' then
         Result[I, j] := -1
       else
       begin
@@ -201,9 +220,11 @@ begin
 
   for I := 1 to 10 do
     for j := 1 to 10 do
+    if correct then
+
     begin
       ShipLength := 1;
-      if field[I, j] < 0 then
+      if (field[I, j] < 0) and correct then
       begin
         field[I, j] := 1;
         ships[count] := char(I) + char(j) + ' ';
@@ -260,72 +281,111 @@ end;
 procedure Render(field:TMatrix);
 var i, j:integer;
 begin
+
+  writeln(' ');
+  writeln('    А   Б   В   Г   Д   Е   Ж   З   И   К');
+  writeln('  ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐');
   for I := 1 to 10 do
   begin
+  write(i:2);
     for j := 1 to 10 do
     begin
+      write('│');
       case field[I, j] of
         2:
-          write('�');
+        begin
+        setcolor(2);
+          write(' П ');
+        setcolor(15);
+        end;
         3:
-          write('�');
+          begin
+        setcolor(14);
+          write(' Р ');
+        setcolor(15);
+        end;
         4:
-          write('�');
+          begin
+        setcolor(12);
+          write(' У ');
+        setcolor(15);
+        end;
       else
-        write(' ');
+        write('   ');
 
       end;
-      write(' ');
-
     end;
-    writeln;
+    writeln('│');
+    if i<>10 then
+    writeln('  ├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤');
   end;
+  writeln('  └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘');
+
 end;
+
 procedure Game(var field: TMatrix; var ships: TShip; n: integer;
   var k: integer);
 var
   I, j, p: integer;
   s: string;
 begin
+ClearConsoleWindow;
+  writeln('ХОД ', n, '-ГО ИГРОКА');
   render(field);
-  writeln('����������: ', n, '������' );
-  ReadLn(s);
+  write(n, '-Й ИГРОК ВВЕДИТЕ КООРДИНАТЫ: ');
+  ReadLN(s);
   repeat
+     p := 0;
     if ConvertInputToCordinate(s) then
     begin
       if CheckCordsOnField(field, s) then
       begin
         ChangeField(field, s, ships);
+        ClearConsoleWindow;
+        writeln('ХОД ', n, '-ГО ИГРОКА');
         render(field);
         p := field[ord(s[1]), ord(s[2])];
         case p of
           2:
-            writeln('������');
+            writeln('Промах');
           3:
-            writeln('�����');
+            writeln('Ранил');
           4:
-            writeln('����');
+            writeln('Убил');
+        end;
+        if ((p = 3) or (p = 4)) and (k<20) then
+        begin
+          k:=k+1;
+          write(n, '-Й ИГРОК ВВЕДИТЕ КООРДИНАТЫ: ');
+      ReadLn(s);
         end;
       end
       else
       begin
+      ClearConsoleWindow;
+      writeln('ХОД ', n, '-ГО ИГРОКА');
         render(field);
-        writeln('�������������� ������');
+        writeln('Использованная клетка');
+        write(n, '-Й ИГРОК ВВЕДИТЕ КООРДИНАТЫ: ');
+      ReadLn(s);
       end;
     end
     else
       begin
+      ClearConsoleWindow;
+      writeln('ХОД ', n, '-ГО ИГРОКА');
         render(field);
-        writeln('�������� ����������');
-      end;
-
-    if (p = 3) or (p = 4) then
-    begin
-      writeln('����������: ', n, '������' );
+        writeln('Неверные координаты');
+        write(n, '-Й ИГРОК ВВЕДИТЕ КООРДИНАТЫ: ');
       ReadLn(s);
+      end;
+    if (p = 2) and (k<20) then
+     begin
+      writeln('Подтвердите ход следующего игрока' );
+      ReadLn;
 
     end;
-  until (n = 20) or (p = 2);
+  until (k = 20) or (p = 2);
 
 end;
 
@@ -335,26 +395,29 @@ var
   ships1, ships2: TShip;
 
 begin
+  SetConsoleTitle(PChar('Морской бой'));
   matrix1 := readMatrixFromFile('field1.txt');
   matrix2 := readMatrixFromFile('field2.txt');
 
   if isCorrect(matrix1, ships1) then
     if isCorrect(matrix2, ships2) then
     begin
+      k1:=0;
+      k2:=0;
       repeat
-        Game(matrix1, ships1, 2, k2);
-        if k2 <> 20 then
-          Game(matrix2, ships2, 1, k1);
+        Game(matrix2, ships2, 1, k1);
+        if k1 <> 20 then
+          Game(matrix1, ships1, 2, k2);
       until (k1 = 20) or (k2 = 20);
       if k1 = 20 then
-        writeln('������� ������ �����!')
+        writeln('Победил первый игрок!')
       else
-        writeln('������� ������ �����!')
+        writeln('Победил второй игрок!')
     end
     else
-      writeln('������� 2 �����������')
+      writeln('Матрица 2 некорректна')
   else
-    writeln('������� 1 �����������');
+    writeln('Матрица 1 некорректна');
 
   ReadLn;
 
