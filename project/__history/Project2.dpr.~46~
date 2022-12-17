@@ -484,19 +484,14 @@ var
   matrix1, matrix2: TMatrix;
   k1, k2: integer;
   ships1, ships2: TShip;
-  corr1, corr2: boolean;
 
 begin
   SetConsoleTitle(PChar('Морской бой'));
-  writeln('Типа титульник');
-  writeln('нажмите enter чтобы играть');
-  readln;
   matrix1 := readMatrixFromFile('field1.txt');
   matrix2 := readMatrixFromFile('field2.txt');
-  corr1 := isCorrect(matrix1, ships1);
-  corr2 := isCorrect(matrix2, ships2);
-  if corr1 then
-    if corr2 then
+
+  if isCorrect(matrix1, ships1) then
+    if isCorrect(matrix2, ships2) then
     begin
       k1:=0;
       k2:=0;
@@ -513,15 +508,12 @@ begin
       end
       else
         writeln('Победил второй игрок!')
-    end;
-  if not corr1 then
-    if not corr2 then
-      writeln('Оба игровых поля заполнены неправильно!')
+    end
     else
-      writeln('Игровое поле первого игрока заполнено неправильно!')
-  else if not corr2 then
-       writeln('Игровое поле второго игрока заполнено неправильно!');
-  writeln('Нажмите Enter для завершения программы');
+      writeln('Матрица 2 некорректна')
+  else
+    writeln('Матрица 1 некорректна');
+
   ReadLn;
 
 end.
