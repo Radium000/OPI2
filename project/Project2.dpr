@@ -275,11 +275,13 @@ begin
 
         until NewCords = '11';
         if ShipLength<5 then
-          shipsNum[ShipLength] := shipsNum[ShipLength] - 1;
-        if shipsNum[ShipLength] < 0 then
-          correct := False
-        else
-          Inc(count);
+          begin
+            shipsNum[ShipLength] := shipsNum[ShipLength] - 1;
+            if shipsNum[ShipLength] < 0 then
+              correct := False
+            else
+              Inc(count);
+          end;
 
       end;
     end;
